@@ -33,11 +33,12 @@ export function Header() {
   const programs = [
     { name: 'Sarjana Teologi', path: '/program/sarjana-teologi' },
     { name: 'Sarjana Pendidikan Kristen', path: '/program/sarjana-pendidikan-kristen' },
-    { name: 'Magister Teologi Pelayanan', path: '/program/magister-teologi-pelayanan' },
+    { name: 'Magister Teologi Pelayanan Pastoral', path: '/program/magister-teologi-pastoral' },
+    { name: 'Magister Teologi Transformasi Budaya & Masyarakat', path: '/program/magister-teologi-transformasi' },
     { name: 'Magister Pendidikan Kristen', path: '/program/magister-pendidikan-kristen' },
     { name: 'Magister Ministri Marketplace', path: '/program/magister-ministri-marketplace' },
-    { name: 'Magister Kepemimpinan Pastoral', path: '/program/magister-kepemimpinan-pastoral' },
-    { name: 'Magister Teologi & Pelayanan Gerejawi', path: '/program/magister-teologi-gerejawi' },
+    { name: 'Magister Ministri Kepemimpinan Pastoral', path: '/program/magister-kepemimpinan-pastoral' },
+    { name: 'Magister Ministri Teologi Pelayanan Gerejawi', path: '/program/magister-teologi-pelayanan' },
   ];
 
   const tentangKami = [

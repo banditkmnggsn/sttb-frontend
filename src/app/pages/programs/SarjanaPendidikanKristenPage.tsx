@@ -1,126 +1,147 @@
 import { ProgramHero } from '../../components/shared/ProgramHero';
 import { GraduateProfile } from '../../components/shared/GraduateProfile';
 import { AcademicInfo } from '../../components/shared/AcademicInfo';
-import { CurriculumCategories } from '../../components/shared/CurriculumCategories';
-import { CourseTable } from '../../components/shared/CourseTable';
-import { ConcentrationSection } from '../../components/shared/ConcentrationSection';
+import { CurriculumAccordion } from '../../components/shared/CurriculumAccordion';
 import { CareerOpportunities } from '../../components/shared/CareerOpportunities';
 import { CTASection } from '../../components/shared/CTASection';
 
 export function SarjanaPendidikanKristenPage() {
-  const curriculumCategories = [
+  const generalCourses = [
+    { name: 'Pancasila & Kewarganegaraan', sks: 2 },
+    { name: 'Bahasa Indonesia', sks: 2 },
+    { name: 'Bahasa Inggris Teologi', sks: 3 },
+    { name: 'Psikologi Perkembangan Masa Hidup', sks: 2 },
+    { name: 'Metode Penulisan & Penelitian', sks: 3 }
+  ];
+  
+  const biblicalStudies = [
+    { name: 'Studi PL 1: Kitab Taurat', sks: 3 },
+    { name: 'Studi PL 2: Kitab Sejarah', sks: 3 },
+    { name: 'Studi PL 3: Kitab Sastra', sks: 3 },
+    { name: 'Studi PL 4: Kitab Nabi-nabi', sks: 3 },
+    { name: 'Studi PB 1: Kitab Injil', sks: 3 },
+    { name: 'Studi PB 2: Kisah Para Rasul & Surat Paulus', sks: 3 },
+    { name: 'Studi PB 3: Surat Umum & Wahyu', sks: 3 },
+    { name: 'Bahasa Ibrani', sks: 3 },
+    { name: 'Bahasa Yunani', sks: 2 },
+    { name: 'Hermeneutika Biblika', sks: 3 }
+  ];
+
+  const theologicalStudies = [
+    { name: 'Prolegomena & Doktrin Alkitab', sks: 3 },
+    { name: 'Doktrin Allah Penciptaan & Manusia', sks: 3 },
+    { name: 'Doktrin Kristus, Dosa & Keselamatan', sks: 3 },
+    { name: 'Doktrin Roh Kudus & Akhir Zaman', sks: 3 },
+    { name: 'Doktrin Gereja', sks: 3 },
+    { name: 'Apologetika', sks: 3 },
+    { name: 'Etika Kristen', sks: 2 }
+  ];
+
+  const historyAndCultureCourses = [
+    { name: 'Sejarah & Filosofi Pendidikan Kristen', sks: 3 }
+  ];
+
+  const educationAndPracticalCourses = [
+    { name: 'Teologi Asuhan Kristen', sks: 2 },
+    { name: 'Formasi Spiritualitas', sks: 2 },
+    { name: 'Pelayanan Ibadah & Musik', sks: 3 },
+    { name: 'Homiletika 1', sks: 3 },
+    { name: 'Homiletika 2', sks: 3 },
+    { name: 'Konseling Pastoral 1 - Dasar Konseling', sks: 2 },
+    { name: 'Konseling Pastoral 2 - Praktik Konseling Sekolah', sks: 3 },
+    { name: 'Pemuridan Transformatif', sks: 3 },
+    { name: 'Pelayanan Anak Transformatif', sks: 3 },
+    { name: 'Pelayanan Kaum Muda Transformatif', sks: 3 },
+    { name: 'Pelayanan Orang Tua Transformatif', sks: 3 },
+    { name: 'Introduksi Pendidikan Kristen', sks: 2 },
+    { name: 'Psikologi Pendidikan Kristen', sks: 3 },
+    { name: 'Teologi Pendidikan Kristen', sks: 2 },
+    { name: 'Pendidikan Kristen', sks: 2 },
+    { name: 'Integrasi Iman & Ilmu', sks: 3 },
+    { name: 'Integrasi Teologi dan Spiritualitas Anak dan Remaja', sks: 3 },
+    { name: 'Kurikulum Pendidikan Kristen', sks: 3 },
+    { name: 'Perencanaan & Evaluasi Pembelajaran', sks: 3 },
+    { name: 'Strategi Pembelajaran', sks: 3 },
+    { name: 'Media & Teknologi Pembelajaran', sks: 2 },
+    { name: 'Manajemen / Administrasi Pendidikan', sks: 3 },
+    { name: 'Micro Teaching 1', sks: 2 },
+    { name: 'Micro Teaching 2', sks: 4 }
+  ];
+
+  const FieldPracticalCourses = [
+    { name: 'Praktik Pelayanan Media 1', sks: 0 },
+    { name: 'Praktik Pelayanan Media 2', sks: 0 },
+    { name: 'Praktik Pelayanan Akhir Pekan 1', sks: 0 },
+    { name: 'Praktik Pelayanan Akhir Pekan 2', sks: 0 },
+    { name: 'Praktik Pelayanan Misi', sks: 1 },
+    { name: 'Praktik Pelayanan 1 Tahun', sks: 8 }
+  ];
+
+  const FinalTasks = [
+    { name: 'Penulisan Artikel Jurnal', sks: 3 },
+    { name: 'Proyek Merancang Program Pembinaan', sks: 4 }
+  ];
+
+  const fullCurriculum = [
     {
-      title: 'Mata Kuliah Umum',
-      description: 'Mata kuliah dasar yang mengembangkan wawasan kebangsaan dan kemampuan akademik.',
-      sks: 14
+      title: 'Mata Kuliah Dasar Umum',
+      description: 'Mata kuliah dasar yang membentuk pemikiran kebangsaan, keterampilan bahasa, dan metode penelitian.',
+      sks: 12,
+      courses: generalCourses,
+      variant: 'red' as const
     },
     {
-      title: 'Studi Biblika & Teologi',
-      description: 'Fondasi Alkitab dan teologi yang menjadi dasar pendidikan Kristen.',
-      sks: 28
+      title: 'Studi Biblika',
+      description: 'Studi komprehensif terhadap Alkitab, bahasa asli (Ibrani dan Yunani), serta hermeneutika biblika.',
+      sks: 29,
+      courses: biblicalStudies,
+      variant: 'blue' as const
     },
     {
-      title: 'Ilmu Pendidikan',
-      description: 'Teori dan praktik pendidikan modern yang terintegrasi dengan nilai Kristen.',
-      sks: 32
+      title: 'Studi Teologi',
+      description: 'Pemahaman mendalam tentang doktrin-doktrin utama kekristenan, apologetika, dan etika Kristen.',
+      sks: 20,
+      courses: theologicalStudies,
+      variant: 'red' as const
     },
     {
-      title: 'Pendidikan Agama Kristen',
-      description: 'Metodologi dan strategi pengajaran PAK yang efektif.',
-      sks: 28
+      title: 'Studi Sejarah & Budaya',
+      description: 'Mempelajari sejarah dan filosofi dalam konteks Pendidikan Kristen.',
+      sks: 3,
+      courses: historyAndCultureCourses,
+      variant: 'blue' as const
     },
     {
-      title: 'Konsentrasi',
-      description: 'Spesialisasi dalam bidang pendidikan anak atau remaja.',
-      sks: 18
+      title: 'Studi Pendidikan & Praktika',
+      description: 'Fokus utama pada ilmu kependidikan, psikologi, kurikulum, strategi pembelajaran, hingga micro teaching dan konseling pastoral.',
+      sks: 65,
+      courses: educationAndPracticalCourses,
+      variant: 'red' as const
     },
     {
-      title: 'Praktik Mengajar',
-      description: 'Pengalaman mengajar di sekolah dan gereja di bawah bimbingan.',
-      sks: 12
+      title: 'Praktik Pelayanan',
+      description: 'Pengalaman langsung melayani di sekolah atau gereja, mencakup pelayanan misi dan praktik 1 tahun penuh.',
+      sks: 9,
+      courses: FieldPracticalCourses,
+      variant: 'blue' as const
     },
     {
       title: 'Tugas Akhir',
-      description: 'Skripsi penelitian pendidikan Kristen.',
-      sks: 12
-    }
-  ];
-
-  const generalCourses = [
-    { name: 'Pendidikan Pancasila', sks: 2 },
-    { name: 'Pendidikan Kewarganegaraan', sks: 2 },
-    { name: 'Bahasa Indonesia', sks: 2 },
-    { name: 'Bahasa Inggris I', sks: 2 },
-    { name: 'Bahasa Inggris II', sks: 2 },
-    { name: 'Teknologi Informasi & Komunikasi', sks: 2 },
-    { name: 'Metode Penelitian Pendidikan', sks: 2 }
-  ];
-
-  const educationCourses = [
-    { name: 'Pengantar Ilmu Pendidikan', sks: 3 },
-    { name: 'Filsafat Pendidikan Kristen', sks: 3 },
-    { name: 'Psikologi Pendidikan', sks: 3 },
-    { name: 'Psikologi Perkembangan Anak', sks: 2 },
-    { name: 'Psikologi Perkembangan Remaja', sks: 2 },
-    { name: 'Kurikulum & Pembelajaran', sks: 3 },
-    { name: 'Media Pembelajaran', sks: 2 },
-    { name: 'Evaluasi Pembelajaran', sks: 3 },
-    { name: 'Manajemen Pendidikan', sks: 3 },
-    { name: 'Bimbingan & Konseling', sks: 3 },
-    { name: 'Sosiologi Pendidikan', sks: 2 },
-    { name: 'Pendidikan Karakter', sks: 2 }
-  ];
-
-  const pakCourses = [
-    { name: 'Pengantar Pendidikan Agama Kristen', sks: 3 },
-    { name: 'Teologi Pendidikan Kristen', sks: 3 },
-    { name: 'Sejarah Pendidikan Kristen', sks: 2 },
-    { name: 'Metodologi Pengajaran PAK', sks: 3 },
-    { name: 'PAK Anak', sks: 3 },
-    { name: 'PAK Remaja', sks: 3 },
-    { name: 'PAK Pemuda', sks: 2 },
-    { name: 'PAK Dewasa', sks: 2 },
-    { name: 'Pengembangan Kurikulum PAK', sks: 3 },
-    { name: 'Media & Kreativitas PAK', sks: 2 },
-    { name: 'Manajemen Sekolah Minggu', sks: 2 }
-  ];
-
-  const concentrations = [
-    {
-      title: 'Pelayanan Anak Holistik',
-      description: 'Fokus pada pendidikan dan pelayanan anak usia dini dengan pendekatan holistik.',
-      courses: [
-        'Teologi Anak',
-        'Psikologi Anak Usia Dini',
-        'Metode Mengajar Anak',
-        'Kreativitas dalam Pelayanan Anak',
-        'Pelayanan Keluarga & Parenting',
-        'Cerita & Dramatisasi untuk Anak'
-      ]
-    },
-    {
-      title: 'Pelayanan Remaja & Pemuda',
-      description: 'Mempersiapkan pendidik yang efektif dalam membina remaja dan pemuda.',
-      courses: [
-        'Teologi untuk Remaja',
-        'Dinamika Kelompok Remaja',
-        'Kepemimpinan Remaja',
-        'Konseling Remaja',
-        'Youth Ministry Strategy',
-        'Media Digital untuk Pemuda'
-      ]
+      description: 'Penulisan artikel jurnal dan penyusunan proyek merancang program pembinaan.',
+      sks: 7,
+      courses: FinalTasks,
+      variant: 'red' as const
     }
   ];
 
   const careers = [
-    'Guru PAK',
-    'Kepala Sekolah Kristen',
-    'Koordinator Kurikulum',
-    'Pembina Sekolah Minggu',
+    'Guru / Pendidik Kristen',
+    'Kepala Sekolah / Administrator Pendidikan',
+    'Perancang Kurikulum Pendidikan',
     'Konselor Sekolah',
-    'Dosen PAK',
-    'Pengembang Materi PAK',
-    'Trainer Pendidikan Kristen'
+    'Pembina Rohani / Chaplain Sekolah',
+    'Pendeta Anak & Remaja',
+    'Pengurus Yayasan Pendidikan Kristen'
   ];
 
   return (
@@ -128,53 +149,42 @@ export function SarjanaPendidikanKristenPage() {
       <ProgramHero
         title="SARJANA PENDIDIKAN KRISTEN"
         degree="S.Pd.K (Sarjana Pendidikan Kristen)"
-        description="Program ini menghasilkan pendidik Kristen yang profesional, kompeten dalam pedagogi, dan memiliki integritas iman yang kuat untuk melayani di sekolah dan gereja."
+        description="Program studi ini ditujukan untuk memperlengkapi mereka yang terpanggil menjadi pendidik Kristen yang akan melayani di sekolah, gereja, maupun di lembaga pelayanan lainnya, dalam konteks urban."
         backgroundImage="https://images.unsplash.com/photo-1758413350815-7b06dbbfb9a7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
       />
 
       <GraduateProfile />
 
       <AcademicInfo
-        totalSks="144 SKS"
-        duration="4 Tahun"
-        system="Kombinasi kuliah teori, praktik mengajar, micro teaching, dan field study di sekolah-sekolah Kristen."
-        requirements="Lulusan SMA/SMK/MA dengan nilai rata-rata minimal 70"
-        additionalInfo="Program ini telah terakreditasi dan menghasilkan lulusan yang siap mengajar di sekolah-sekolah Kristen maupun melayani di bidang pendidikan gereja."
+        totalSks="145 SKS"
+        duration="4 Tahun Full Time"
+        system="Perkuliahan dilakukan secara blok teaching (3 minggu + minggu tugas). Berlangsung selama 6 semester dan dilanjut praktik pelayanan selama 1 tahun."
+        requirements="Minimal lulusan SMA/sederajat. Sudah baptis dewasa/sidi. Terlibat pelayanan gerejawi/lembaga Kristen. Memiliki panggilan jelas sebagai pendidik Kristen penuh waktu."
+        additionalInfo="Profil Lulusan yang dituju adalah 'Transformative Educator'. Dalam studinya, mahasiswa diwajibkan menjalani praktik tiga bulan, praktik satu tahun, youth camp dan Mission Education & Exposure Training (MEET)."
       />
 
-      <CurriculumCategories categories={curriculumCategories} />
+      <CurriculumAccordion categories={fullCurriculum} />
 
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4 max-w-6xl">
-          <h2 className="text-4xl font-bold text-[#003478] mb-12 text-center">Daftar Mata Kuliah</h2>
-          
-          <CourseTable 
-            categoryTitle="Mata Kuliah Umum" 
-            courses={generalCourses}
-            variant="red"
-          />
-
-          <CourseTable 
-            categoryTitle="Ilmu Pendidikan" 
-            courses={educationCourses}
-            variant="blue"
-          />
-
-          <CourseTable 
-            categoryTitle="Pendidikan Agama Kristen" 
-            courses={pakCourses}
-            variant="red"
-          />
+          <div className="bg-white p-8 rounded-lg shadow-md mt-8">
+            <h3 className="text-xl font-bold text-[#003478] mb-4">Catatan Perkuliahan & Praktik:</h3>
+            <ul className="space-y-2 text-gray-700">
+              <li>• Mahasiswa wajib menyelesaikan total 145 SKS untuk lulus.</li>
+              <li>• Masa studi: 3 tahun kuliah (6 semester) + 1 tahun praktik pelayanan di lapangan.</li>
+              <li>• Lingkup tugas praktik meliputi pelayanan di sekolah Kristen, gereja, organisasi pendamping gereja, panti asuhan, atau lembaga rehabilitasi.</li>
+              <li>• Pengalaman praktik mencakup mengajar, pelayanan sekolah minggu, pemuda-remaja, misi penginjilan, dan administrasi pendidikan.</li>
+              <li>• Tugas Akhir (7 SKS) dikerjakan dalam bentuk Artikel Jurnal (3 SKS) dan Proyek (4 SKS).</li>
+            </ul>
+          </div>
         </div>
       </section>
-
-      <ConcentrationSection concentrations={concentrations} />
 
       <CareerOpportunities careers={careers} />
 
       <CTASection
-        title="Wujudkan Panggilan Anda sebagai Pendidik Kristen"
-        description="Bergabunglah dengan Program Sarjana Pendidikan Kristen dan jadilah agen perubahan dalam dunia pendidikan"
+        title="Terpanggil Menjadi Pendidik yang Transformatif?"
+        description="Bergabunglah dengan Program Sarjana Pendidikan Kristen STTB dan persiapkan diri Anda untuk mencerdaskan dan membentuk karakter generasi masa depan."
         primaryButton={{
           text: 'Daftar Sekarang',
           link: '/admisi'

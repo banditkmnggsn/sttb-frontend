@@ -4,11 +4,12 @@ import { AdminLayout } from "./layouts/AdminLayout";
 import { HomePage } from "./pages/HomePage";
 import { SarjanaTeologiPage } from "./pages/programs/SarjanaTeologiPage";
 import { SarjanaPendidikanKristenPage } from "./pages/programs/SarjanaPendidikanKristenPage";
-import { MagisterTeologiPelayananPage } from "./pages/programs/MagisterTeologiPelayananPage";
+import { MagisterTeologiPastoralPage } from "./pages/programs/MagisterTeologiPastoralPage";
+import { MagisterTeologiTransformasiPage } from "./pages/programs/MagisterTeologiTransformasiPage";
 import { MagisterPendidikanKristenPage } from "./pages/programs/MagisterPendidikanKristenPage";
-import { MagisterMarketplacePage } from "./pages/programs/MagisterMarketplacePage";
-import { MagisterKepemimpinanPastoralPage } from "./pages/programs/MagisterKepemimpinanPastoralPage";
-import { MagisterTeologiGerejawiPage } from "./pages/programs/MagisterTeologiGerejawiPage";
+import { MagisterMinistriMarketplacePage } from "./pages/programs/MagisterMinistriMarketplacePage";
+import { MagisterMinistriKepemimpinanPastoralPage } from "./pages/programs/MagisterMinistriKepemimpinanPastoralPage";
+import { MagisterMinistriTeologiPelayananPage } from "./pages/programs/MagisterMinistriTeologiPelayananPage";
 
 // Tentang Kami pages
 import { SejarahPage } from "./pages/tentang/SejarahPage";
@@ -65,12 +66,13 @@ export const router = createBrowserRouter([
       // Program Studi
       { path: "program/sarjana-teologi", Component: SarjanaTeologiPage },
       { path: "program/sarjana-pendidikan-kristen", Component: SarjanaPendidikanKristenPage },
-      { path: "program/magister-teologi-pelayanan", Component: MagisterTeologiPelayananPage },
+      { path: "program/magister-teologi-pastoral", Component: MagisterTeologiPastoralPage },
+      { path: "program/magister-teologi-transformasi", Component: MagisterTeologiTransformasiPage },
       { path: "program/magister-pendidikan-kristen", Component: MagisterPendidikanKristenPage },
-      { path: "program/magister-ministri-marketplace", Component: MagisterMarketplacePage },
-      { path: "program/magister-kepemimpinan-pastoral", Component: MagisterKepemimpinanPastoralPage },
-      { path: "program/magister-teologi-gerejawi", Component: MagisterTeologiGerejawiPage },
-      
+      { path: "program/magister-ministri-marketplace", Component: MagisterMinistriMarketplacePage },
+      { path: "program/magister-kepemimpinan-pastoral", Component: MagisterMinistriKepemimpinanPastoralPage },
+      { path: "program/magister-teologi-pelayanan", Component: MagisterMinistriTeologiPelayananPage },
+
       // Tentang Kami
       { path: "tentang/sejarah", Component: SejarahPage },
       { path: "tentang/visi-misi", Component: VisiMisiPage },
