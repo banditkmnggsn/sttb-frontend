@@ -1,13 +1,107 @@
+import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router';
 import { Calendar, ArrowLeft, User } from 'lucide-react';
 import { SEO } from '../components/shared/SEO';
-import { newsArticles } from '../data/newsData';
+import { fetchNews, fetchNewsBySlug } from '../utils/api';
+
+type ArticleDetail = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  date: string;
+  image: string;
+  category: string;
+  author?: string;
+};
+
+const fallbackImage = 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080';
 
 export function BeritaDetailPage() {
   const { slug } = useParams<{ slug: string }>();
-  const article = newsArticles.find(a => a.slug === slug);
+  const [article, setArticle] = useState<ArticleDetail | null>(null);
+  const [relatedArticles, setRelatedArticles] = useState<ArticleDetail[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
-  if (!article) {
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadArticle() {
+      if (!slug) {
+        setNotFound(true);
+        setIsLoading(false);
+        return;
+      }
+
+      setIsLoading(true);
+      setNotFound(false);
+
+      try {
+        const data = await fetchNewsBySlug(slug);
+        if (!isMounted) {
+          return;
+        }
+
+        setArticle({
+          slug: data.slug,
+          title: data.title,
+          excerpt: data.excerpt ?? '',
+          content: data.content,
+          date: data.publishDate ?? '',
+          image: data.featuredImage ?? fallbackImage,
+          category: data.category?.name ?? 'Umum',
+          author: data.author?.name,
+        });
+
+        const related = await fetchNews({ page: 1, limit: 3, status: 'published' });
+        if (!isMounted) {
+          return;
+        }
+
+        setRelatedArticles(
+          (related.items ?? [])
+            .filter((item) => item.slug !== slug)
+            .slice(0, 2)
+            .map((item) => ({
+              slug: item.slug,
+              title: item.title,
+              excerpt: item.excerpt ?? '',
+              content: item.content,
+              date: item.publishDate ?? '',
+              image: item.featuredImage ?? fallbackImage,
+              category: item.category?.name ?? 'Umum',
+              author: item.author?.name,
+            }))
+        );
+      } catch {
+        if (!isMounted) {
+          return;
+        }
+        setNotFound(true);
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    void loadArticle();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [slug]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-xl text-gray-600">Memuat artikel...</p>
+      </div>
+    );
+  }
+
+  if (notFound || !article) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -129,10 +223,7 @@ export function BeritaDetailPage() {
             <div className="mt-12">
               <h3 className="text-2xl font-bold text-[#0B1F3B] mb-6">Berita Lainnya</h3>
               <div className="grid md:grid-cols-2 gap-6">
-                {newsArticles
-                  .filter(a => a.slug !== article.slug)
-                  .slice(0, 2)
-                  .map((relatedArticle) => (
+                {relatedArticles.map((relatedArticle) => (
                     <Link 
                       key={relatedArticle.slug}
                       to={`/berita/${relatedArticle.slug}`}

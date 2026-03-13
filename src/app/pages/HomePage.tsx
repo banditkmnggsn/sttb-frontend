@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { GraduationCap, Users, BookOpen, Award, Heart, Target } from 'lucide-react';
 import { Link } from 'react-router';
 import { LayeredHero } from '../components/shared/LayeredHero';
@@ -8,58 +9,153 @@ import { CTASection } from '../components/shared/CTASection';
 import { SEO } from '../components/shared/SEO';
 import { NewsCard } from '../components/shared/NewsCard';
 import { newsArticles } from '../data/newsData';
+import { fetchHomeSection, fetchNews } from '../utils/api';
+
+const fallbackHero = {
+  title: 'Membentuk Pemimpin Rohani Masa Depan',
+  subtitle: 'STTB Bandung',
+  description:
+    'Pendidikan Teologi Berkualitas dengan Komitmen pada Keunggulan Akademik dan Spiritualitas. Bergabunglah dengan komunitas akademik yang berkomitmen menghasilkan pemimpin rohani yang Informed, Transformed, dan Transformative.',
+  primaryButtonText: 'Daftar Sekarang',
+  primaryButtonLink: '/admisi',
+  secondaryButtonText: 'Lihat Program',
+  secondaryButtonLink: '/program/sarjana-teologi',
+  backgroundImage:
+    'https://images.unsplash.com/photo-1772033282500-c85fde65d6fd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+};
+
+const fallbackPrograms = [
+  {
+    title: 'Sarjana Teologi',
+    degree: 'S.Th',
+    description: 'Program studi yang membekali mahasiswa dengan pemahaman teologi yang mendalam dan alkitabiah.',
+    link: '/program/sarjana-teologi',
+    image: 'https://images.unsplash.com/photo-1763136195116-488709b0370e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080'
+  },
+  {
+    title: 'Sarjana Pendidikan Kristen',
+    degree: 'S.Pd.K',
+    description: 'Program yang dirancang untuk menghasilkan pendidik Kristen yang profesional dan berkarakter.',
+    link: '/program/sarjana-pendidikan-kristen',
+    image: 'https://images.unsplash.com/photo-1566831453303-34a2c76ec34f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080'
+  },
+  {
+    title: 'Magister Teologi Pelayanan',
+    degree: 'M.Th',
+    description: 'Program magister untuk mengembangkan kemampuan teologis dan praktis dalam pelayanan gereja.',
+    link: '/program/magister-teologi-pelayanan',
+    image: 'https://images.unsplash.com/photo-1595315342809-fa10945ed07c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080'
+  },
+];
+
+const fallbackStats = [
+  {
+    icon: GraduationCap,
+    value: '7',
+    label: 'Program Studi',
+    description: 'Beragam pilihan program sarjana dan magister'
+  },
+  {
+    icon: Users,
+    value: '500+',
+    label: 'Mahasiswa Aktif',
+    description: 'Komunitas belajar yang dinamis'
+  },
+  {
+    icon: BookOpen,
+    value: '50+',
+    label: 'Dosen Berkualitas',
+    description: 'Tenaga pengajar berpengalaman'
+  },
+  {
+    icon: Award,
+    value: 'Terakreditasi',
+    label: 'BAN-PT',
+    description: 'Standar pendidikan tinggi nasional'
+  }
+];
+
+const iconByName: Record<string, typeof GraduationCap> = {
+  GraduationCap,
+  Users,
+  BookOpen,
+  Award,
+};
 
 export function HomePage() {
-  const programs = [
-    {
-      title: 'Sarjana Teologi',
-      degree: 'S.Th',
-      description: 'Program studi yang membekali mahasiswa dengan pemahaman teologi yang mendalam dan alkitabiah.',
-      link: '/program/sarjana-teologi',
-      image: 'https://images.unsplash.com/photo-1763136195116-488709b0370e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080'
-    },
-    {
-      title: 'Sarjana Pendidikan Kristen',
-      degree: 'S.Pd.K',
-      description: 'Program yang dirancang untuk menghasilkan pendidik Kristen yang profesional dan berkarakter.',
-      link: '/program/sarjana-pendidikan-kristen',
-      image: 'https://images.unsplash.com/photo-1566831453303-34a2c76ec34f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080'
-    },
-    {
-      title: 'Magister Teologi Pelayanan',
-      degree: 'M.Th',
-      description: 'Program magister untuk mengembangkan kemampuan teologis dan praktis dalam pelayanan gereja.',
-      link: '/program/magister-teologi-pelayanan',
-      image: 'https://images.unsplash.com/photo-1595315342809-fa10945ed07c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080'
-    },
-  ];
+  const [heroData, setHeroData] = useState(fallbackHero);
+  const [programs, setPrograms] = useState(fallbackPrograms);
+  const [stats, setStats] = useState(fallbackStats);
+  const [latestNews, setLatestNews] = useState(newsArticles.slice(0, 3));
 
-  const stats = [
-    {
-      icon: GraduationCap,
-      value: '7',
-      label: 'Program Studi',
-      description: 'Beragam pilihan program sarjana dan magister'
-    },
-    {
-      icon: Users,
-      value: '500+',
-      label: 'Mahasiswa Aktif',
-      description: 'Komunitas belajar yang dinamis'
-    },
-    {
-      icon: BookOpen,
-      value: '50+',
-      label: 'Dosen Berkualitas',
-      description: 'Tenaga pengajar berpengalaman'
-    },
-    {
-      icon: Award,
-      value: 'Terakreditasi',
-      label: 'BAN-PT',
-      description: 'Standar pendidikan tinggi nasional'
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadHomeData() {
+      try {
+        const [hero, statsSection, showcaseSection, news] = await Promise.all([
+          fetchHomeSection<Record<string, unknown>>('hero').catch(() => null),
+          fetchHomeSection<Array<Record<string, unknown>>>('stats').catch(() => null),
+          fetchHomeSection<Array<Record<string, unknown>>>('showcase').catch(() => null),
+          fetchNews({ page: 1, limit: 3, status: 'published' }).catch(() => null),
+        ]);
+
+        if (!isMounted) {
+          return;
+        }
+
+        if (hero?.data && typeof hero.data === 'object') {
+          setHeroData((prev) => ({ ...prev, ...(hero.data as typeof fallbackHero) }));
+        }
+
+        if (Array.isArray(stats?.data) && stats.data.length > 0) {
+          setStats(
+            stats.data.map((item) => ({
+              icon: iconByName[String(item.icon ?? '')] ?? GraduationCap,
+              value: String(item.value ?? ''),
+              label: String(item.label ?? ''),
+              description: String(item.description ?? ''),
+            }))
+          );
+        }
+
+        if (Array.isArray(showcaseSection?.data) && showcaseSection.data.length > 0) {
+          setPrograms(
+            showcaseSection.data.map((item) => ({
+              title: String(item.title ?? ''),
+              degree: String(item.degree ?? ''),
+              description: String(item.description ?? ''),
+              link: String(item.link ?? '/admisi'),
+              image: String(item.image ?? ''),
+            }))
+          );
+        }
+
+        if (news?.items?.length) {
+          setLatestNews(
+            news.items.map((article) => ({
+              slug: article.slug,
+              title: article.title,
+              excerpt: article.excerpt ?? '',
+              content: article.content,
+              date: article.publishDate ?? new Date().toISOString(),
+              image: article.featuredImage ?? 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+              category: article.category?.name ?? 'Umum',
+              author: article.author?.name,
+            }))
+          );
+        }
+      } catch {
+        // Keep fallback content when API has not been seeded yet.
+      }
     }
-  ];
+
+    void loadHomeData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <>
@@ -72,18 +168,18 @@ export function HomePage() {
 
       {/* Hero Section with Layered Design */}
       <LayeredHero
-        title="Membentuk Pemimpin Rohani Masa Depan"
-        subtitle="STTB Bandung"
-        description="Pendidikan Teologi Berkualitas dengan Komitmen pada Keunggulan Akademik dan Spiritualitas. Bergabunglah dengan komunitas akademik yang berkomitmen menghasilkan pemimpin rohani yang Informed, Transformed, dan Transformative."
+        title={heroData.title}
+        subtitle={heroData.subtitle}
+        description={heroData.description}
         primaryButton={{
-          text: 'Daftar Sekarang',
-          link: '/admisi'
+          text: heroData.primaryButtonText,
+          link: heroData.primaryButtonLink
         }}
         secondaryButton={{
-          text: 'Lihat Program',
-          link: '/program/sarjana-teologi'
+          text: heroData.secondaryButtonText,
+          link: heroData.secondaryButtonLink
         }}
-        backgroundImage="https://images.unsplash.com/photo-1772033282500-c85fde65d6fd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
+        backgroundImage={heroData.backgroundImage}
       />
 
       {/* Stats Section with Masked Cards */}
@@ -231,7 +327,7 @@ export function HomePage() {
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-            {newsArticles.slice(0, 3).map((article) => (
+            {latestNews.map((article) => (
               <NewsCard
                 key={article.slug}
                 slug={article.slug}

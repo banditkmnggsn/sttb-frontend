@@ -19,7 +19,8 @@ import {
   Home,
   Globe
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { authStorage } from '../utils/auth';
 
 interface NavItem {
   label: string;
@@ -48,10 +49,16 @@ export function AdminLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
+  useEffect(() => {
+    if (!authStorage.getAccessToken()) {
+      navigate('/admin/login');
+    }
+  }, [navigate]);
+
   const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(path + '/');
 
   const handleLogout = () => {
-    // In production, handle actual logout
+    authStorage.clearTokens();
     navigate('/admin/login');
   };
 

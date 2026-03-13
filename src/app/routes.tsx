@@ -2,35 +2,10 @@ import { createBrowserRouter } from "react-router";
 import { RootLayout } from "./layouts/RootLayout";
 import { AdminLayout } from "./layouts/AdminLayout";
 import { HomePage } from "./pages/HomePage";
-import { SarjanaTeologiPage } from "./pages/programs/SarjanaTeologiPage";
-import { SarjanaPendidikanKristenPage } from "./pages/programs/SarjanaPendidikanKristenPage";
-import { MagisterTeologiPelayananPage } from "./pages/programs/MagisterTeologiPelayananPage";
-import { MagisterPendidikanKristenPage } from "./pages/programs/MagisterPendidikanKristenPage";
-import { MagisterMarketplacePage } from "./pages/programs/MagisterMarketplacePage";
-import { MagisterKepemimpinanPastoralPage } from "./pages/programs/MagisterKepemimpinanPastoralPage";
-import { MagisterTeologiGerejawiPage } from "./pages/programs/MagisterTeologiGerejawiPage";
-
-// Tentang Kami pages
-import { SejarahPage } from "./pages/tentang/SejarahPage";
-import { VisiMisiPage } from "./pages/tentang/VisiMisiPage";
-import { MarsPage } from "./pages/tentang/MarsPage";
-import { PengakuanImanPage } from "./pages/tentang/PengakuanImanPage";
-import { DewanDosenPage } from "./pages/tentang/DewanDosenPage";
-import { YayasanPage } from "./pages/tentang/YayasanPage";
-
-// Admisi pages
-import { AdmisiPage } from "./pages/AdmisiPage";
-
-// Keuangan pages
-import { BiayaStudiPage } from "./pages/BiayaStudiPage";
-import { BeasiswaPage } from "./pages/BeasiswaPage";
-import { DukungSTTBPage } from "./pages/keuangan/DukungSTTBPage";
-
-// Other pages
-import { KehidupanKampusPage } from "./pages/KehidupanKampusPage";
-import { KontakPage } from "./pages/KontakPage";
+import { DynamicProgramPage } from "./pages/DynamicProgramPage";
+import { DynamicContentPage } from "./pages/DynamicContentPage";
+import { LecturersPage } from "./pages/LecturersPage";
 import { KegiatanPage } from "./pages/KegiatanPage";
-import { PerpustakaanPage } from "./pages/PerpustakaanPage";
 import { LeadPage } from "./pages/LeadPage";
 import { MediaPage } from "./pages/MediaPage";
 
@@ -61,41 +36,27 @@ export const router = createBrowserRouter([
     Component: RootLayout,
     children: [
       { index: true, Component: HomePage },
-      
+
       // Program Studi
-      { path: "program/sarjana-teologi", Component: SarjanaTeologiPage },
-      { path: "program/sarjana-pendidikan-kristen", Component: SarjanaPendidikanKristenPage },
-      { path: "program/magister-teologi-pelayanan", Component: MagisterTeologiPelayananPage },
-      { path: "program/magister-pendidikan-kristen", Component: MagisterPendidikanKristenPage },
-      { path: "program/magister-ministri-marketplace", Component: MagisterMarketplacePage },
-      { path: "program/magister-kepemimpinan-pastoral", Component: MagisterKepemimpinanPastoralPage },
-      { path: "program/magister-teologi-gerejawi", Component: MagisterTeologiGerejawiPage },
-      
+      { path: "program/:slug", Component: DynamicProgramPage },
+
       // Tentang Kami
-      { path: "tentang/sejarah", Component: SejarahPage },
-      { path: "tentang/visi-misi", Component: VisiMisiPage },
-      { path: "tentang/mars", Component: MarsPage },
-      { path: "tentang/pengakuan-iman", Component: PengakuanImanPage },
-      { path: "tentang/dewan-dosen", Component: DewanDosenPage },
-      { path: "tentang/yayasan", Component: YayasanPage },
-      
-      // Admisi
-      { path: "admisi", Component: AdmisiPage },
-      
-      // Keuangan
-      { path: "keuangan/biaya-studi", Component: BiayaStudiPage },
-      { path: "keuangan/beasiswa", Component: BeasiswaPage },
-      { path: "keuangan/dukung-sttb", Component: DukungSTTBPage },
-      
+      { path: "tentang/dewan-dosen", Component: LecturersPage },
+      { path: "tentang/:slug", Component: DynamicContentPage },
+
+      // Generic CMS-backed pages
+      { path: "admisi", Component: DynamicContentPage },
+      { path: "keuangan/:slug", Component: DynamicContentPage },
+      { path: "kehidupan-kampus", Component: DynamicContentPage },
+      { path: "kontak", Component: DynamicContentPage },
+
       // News & Events
       { path: "berita", Component: BeritaListPage },
       { path: "berita/:slug", Component: BeritaDetailPage },
-      
+
       // Other
-      { path: "kehidupan-kampus", Component: KehidupanKampusPage },
-      { path: "kontak", Component: KontakPage },
       { path: "kegiatan", Component: KegiatanPage },
-      { path: "perpustakaan", Component: PerpustakaanPage },
+      { path: "perpustakaan", Component: DynamicContentPage },
       { path: "lead", Component: LeadPage },
       { path: "media", Component: MediaPage },
     ],

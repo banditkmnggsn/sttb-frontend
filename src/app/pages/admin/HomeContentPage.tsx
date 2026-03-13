@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PageHeader } from '../../components/admin/PageHeader';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
 import { Button } from '../../components/ui/button';
@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from '../../components/ui/alert';
 import { Save, Plus, Trash2, MoveUp, MoveDown, Eye } from 'lucide-react';
 import { mockHomeHero, mockHomeStats, mockHomeProgramShowcase } from '../../data/mockCMSData';
 import type { HomeHeroContent, HomeStatsItem, HomeProgramShowcase } from '../../data/contentModels';
+import { fetchHomeSection, updateHomeSection } from '../../utils/api';
 
 export function HomeContentPage() {
   const [heroData, setHeroData] = useState<HomeHeroContent>(mockHomeHero);
@@ -17,18 +18,61 @@ export function HomeContentPage() {
   const [showcaseData, setShowcaseData] = useState<HomeProgramShowcase[]>(mockHomeProgramShowcase);
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
+  const [loadMessage, setLoadMessage] = useState('');
 
-  const handleSave = async (section: string) => {
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadSections() {
+      try {
+        const [hero, stats, showcase] = await Promise.all([
+          fetchHomeSection<Partial<HomeHeroContent>>('hero').catch(() => null),
+          fetchHomeSection<HomeStatsItem[]>('stats').catch(() => null),
+          fetchHomeSection<HomeProgramShowcase[]>('showcase').catch(() => null),
+        ]);
+
+        if (!isMounted) {
+          return;
+        }
+
+        if (hero?.data && typeof hero.data === 'object') {
+          setHeroData((prev) => ({ ...prev, ...hero.data }));
+        }
+
+        if (Array.isArray(stats?.data) && stats.data.length > 0) {
+          setStatsData(stats.data as HomeStatsItem[]);
+        }
+
+        if (Array.isArray(showcase?.data) && showcase.data.length > 0) {
+          setShowcaseData(showcase.data as HomeProgramShowcase[]);
+        }
+      } catch {
+        if (isMounted) {
+          setLoadMessage('Data backend belum ada, menampilkan data default sementara.');
+        }
+      }
+    }
+
+    void loadSections();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleSave = async (section: string, label: string, data: unknown) => {
     setIsSaving(true);
     setSaveMessage('');
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    setSaveMessage(`${section} berhasil disimpan!`);
-    setIsSaving(false);
-    
-    setTimeout(() => setSaveMessage(''), 3000);
+
+    try {
+      await updateHomeSection(section, data);
+      setSaveMessage(`${label} berhasil disimpan!`);
+      setTimeout(() => setSaveMessage(''), 3000);
+    } catch {
+      setSaveMessage(`Gagal menyimpan ${label}. Pastikan Anda sudah login admin.`);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const updateHeroField = (field: keyof HomeHeroContent, value: any) => {
@@ -84,6 +128,14 @@ export function HomeContentPage() {
       />
 
       <div className="p-8">
+        {loadMessage && (
+          <Alert className="mb-6 bg-amber-50 border-amber-200">
+            <AlertDescription className="text-amber-800">
+              {loadMessage}
+            </AlertDescription>
+          </Alert>
+        )}
+
         {saveMessage && (
           <Alert className="mb-6 bg-green-50 border-green-200">
             <AlertDescription className="text-green-800">
@@ -202,7 +254,7 @@ export function HomeContentPage() {
 
                 <div className="flex gap-3 pt-4">
                   <Button 
-                    onClick={() => handleSave('Hero Section')} 
+                    onClick={() => handleSave('hero', 'Hero Section', heroData)} 
                     disabled={isSaving}
                     className="bg-[#C1121F] hover:bg-[#9A0E19]"
                   >
@@ -306,7 +358,7 @@ export function HomeContentPage() {
 
             <div className="flex gap-3">
               <Button 
-                onClick={() => handleSave('Statistik')} 
+                onClick={() => handleSave('stats', 'Statistik', statsData)} 
                 disabled={isSaving}
                 className="bg-[#C1121F] hover:bg-[#9A0E19]"
               >
@@ -414,7 +466,7 @@ export function HomeContentPage() {
 
             <div className="flex gap-3">
               <Button 
-                onClick={() => handleSave('Program Showcase')} 
+                onClick={() => handleSave('showcase', 'Program Showcase', showcaseData)} 
                 disabled={isSaving}
                 className="bg-[#C1121F] hover:bg-[#9A0E19]"
               >

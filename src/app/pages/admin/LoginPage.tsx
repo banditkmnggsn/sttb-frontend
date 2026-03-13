@@ -1,20 +1,33 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Lock, Mail, Eye, EyeOff } from 'lucide-react';
+import { login } from '../../utils/api';
+import { authStorage } from '../../utils/auth';
 
 export function LoginPage() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In production, handle actual authentication
-    console.log('Login attempt:', formData);
-    navigate('/admin/dashboard');
+    setErrorMessage('');
+    setIsLoading(true);
+
+    try {
+      const authResult = await login(formData.email, formData.password);
+      authStorage.setTokens(authResult.accessToken, authResult.refreshToken);
+      navigate('/admin/dashboard');
+    } catch {
+      setErrorMessage('Login gagal. Cek email/username dan password Anda.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -34,6 +47,12 @@ export function LoginPage() {
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Sign In</h2>
           
           <form onSubmit={handleLogin} className="space-y-5">
+            {errorMessage && (
+              <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                {errorMessage}
+              </div>
+            )}
+
             {/* Email Field */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -97,9 +116,10 @@ export function LoginPage() {
             {/* Login Button */}
             <button
               type="submit"
+              disabled={isLoading}
               className="w-full py-3 bg-[#C1121F] hover:bg-[#9A0E19] text-white font-semibold rounded-lg transition-colors"
             >
-              Sign In
+              {isLoading ? 'Signing In...' : 'Sign In'}
             </button>
           </form>
 

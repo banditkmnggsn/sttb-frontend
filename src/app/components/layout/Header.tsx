@@ -71,7 +71,7 @@ export function Header() {
           <Link to="/lead" className="hover:text-[#2E90FF] transition">LEAD</Link>
           <Link to="/media" className="hover:text-[#2E90FF] transition">Media</Link>
           <Link to="/admisi" className="hover:text-[#2E90FF] transition">Pendaftaran Online</Link>
-          <a href="#" className="hover:text-[#2E90FF] transition">Login</a>
+          <Link to="/admin/login" className="hover:text-[#2E90FF] transition">Login</Link>
         </div>
       </div>
 
