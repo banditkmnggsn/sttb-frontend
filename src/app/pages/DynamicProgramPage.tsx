@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router';
 import { ProgramHero } from '../components/shared/ProgramHero';
 import { AcademicInfo } from '../components/shared/AcademicInfo';
 import { CurriculumCategories } from '../components/shared/CurriculumCategories';
+import { CurriculumAccordion } from '../components/shared/CurriculumAccordion';
 import { CourseTable } from '../components/shared/CourseTable';
 import { ConcentrationSection } from '../components/shared/ConcentrationSection';
 import { CareerOpportunities } from '../components/shared/CareerOpportunities';
@@ -13,6 +14,14 @@ import { fetchProgramBySlug, type ProgramItem } from '../utils/api';
 type CourseGroup = {
   title: string;
   courses: Array<{ name: string; sks: number }>;
+};
+
+type AccordionCategory = {
+  title: string;
+  description: string;
+  sks: number;
+  courses: Array<{ name: string; sks: number }>;
+  variant?: 'red' | 'blue';
 };
 
 const fallbackImage = 'https://images.unsplash.com/photo-1575581535069-f9ef30a209b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080';
@@ -244,6 +253,21 @@ export function DynamicProgramPage() {
   const academicInfo = getObject(program.academicInfo);
   const categoryCards = normalizeCategories(program);
   const courseGroups = normalizeCourseGroups(program);
+  const courseGroupMap = new Map(courseGroups.map((group) => [group.title, group.courses]));
+  const accordionCategories: AccordionCategory[] = (categoryCards.length > 0 ? categoryCards : courseGroups.map((group) => ({
+    title: group.title,
+    description: 'Daftar mata kuliah pada kelompok ini.',
+    sks: group.courses.reduce((sum, course) => sum + course.sks, 0),
+  }))).map((category, index) => {
+    const matchedCourses = courseGroupMap.get(category.title) ?? [];
+    return {
+      title: category.title,
+      description: category.description,
+      sks: category.sks ?? matchedCourses.reduce((sum, course) => sum + course.sks, 0),
+      courses: matchedCourses,
+      variant: index % 2 === 0 ? 'red' : 'blue',
+    };
+  }).filter((category) => category.courses.length > 0);
   const concentrations = normalizeConcentrations(program);
   const careers = normalizeCareers(program);
   const heroTitle = getString(program.title, titleFromSlug(slug));
@@ -279,8 +303,16 @@ export function DynamicProgramPage() {
 
       {categoryCards.length > 0 && <CurriculumCategories categories={categoryCards} />}
 
+      {accordionCategories.length > 0 && (
+        <div className="lg:hidden bg-gray-50 py-8">
+          <div className="container mx-auto max-w-6xl px-4">
+            <CurriculumAccordion categories={accordionCategories} />
+          </div>
+        </div>
+      )}
+
       {courseGroups.length > 0 && (
-        <section className="bg-gray-50 py-16">
+        <section className={`bg-gray-50 py-16 ${accordionCategories.length > 0 ? 'hidden lg:block' : ''}`}>
           <div className="container mx-auto max-w-6xl px-4">
             <h2 className="mb-12 text-center text-4xl font-bold text-[#003478]">Daftar Mata Kuliah</h2>
             {courseGroups.map((group, index) => (
